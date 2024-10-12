@@ -24,21 +24,40 @@ dpg_per_capita =pd.read_csv('gdp_per_capita.csv',thousands=',',delimiter='\t',en
 
 # prepaer the data
 # ساخت ابجکت از داده ها
-countery_state= prepare_country_stats(oecd_bli,dpg_per_capita) 
+country_state= prepare_country_stats(oecd_bli,dpg_per_capita) 
+
 # داده های x
-X =np.c_[countery_state["GDP per capita"]]
+x =np.c_[country_state["GDP per capita"]]
 #  yداده های 
-y=np.c_[countery_state["Life satisfaction"]]
+y=np.c_[country_state["Life satisfaction"]]
 
 # # visual the data 
-countery_state.plot(kind='scatter',x="GDP per capita", y='Life satisfaction') 
-plt.show()
+country_state.plot(kind='scatter',x="GDP per capita", y='Life satisfaction') 
+
 # # select the liner model
 model =sklearn.linear_model.LinearRegression()
 
 # # train the model
-model.fit(X,y)
+model.fit(x,y)
 
-# #RESULT
-X_new = [[22587]]
-print(model.predict(X_new))
+
+# plot the regression line
+x_new = np.linspace(x.min(), x.max(), 100).reshape(-1, 1)
+y_new_pred = model.predict(x_new)
+
+plt.plot(x_new, y_new_pred, color='red', linewidth=2, label=f'Regression Line')
+
+# add title and labels
+plt.title('GDP per capita vs Life Satisfaction')
+plt.xlabel('GDP per capita')
+plt.ylabel('Life Satisfaction')
+
+# add legend
+plt.legend()
+
+# print prediction
+predicted_point = model.predict([[22587]])
+plt.scatter(22587, predicted_point[0], marker='*', c='g', s=200)
+
+plt.show()
+
